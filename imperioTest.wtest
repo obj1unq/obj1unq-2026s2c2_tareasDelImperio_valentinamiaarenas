@@ -1,11 +1,82 @@
 import imperio.*
 import habitantes.*
+import comunidades.*
 
 describe "Imperio Inca" {
+  //Tareas
+  const siembraDePapa = new SiembraEnElValle(nvlEsfuerzo = 1.2, mes = 3)
+  const siembraDeMaiz = new SiembraEnTerrazas(nvlEsfuerzo = 1.5)
+  const rutaTamboCentral = new Mensaje()
+  const caminoDelSapaInca = new MensajeImperial()
+  const construccionDeAndenes = new SiembraEnElValle(nvlEsfuerzo = 1.2, mes = 3)
+  //Habitantes
+  const cusi = new Campesina(energia = 100, tiempo = 4)
+  const tupac = new Elite(energia = 200)
+  //Colcas
+  const agricola = new Colca(tareas = #{siembraDePapa, construccionDeAndenes})
+  const central = new Colca(tareas = #{caminoDelSapaInca, construccionDeAndenes})
+  //Comunidades
+  const aylluReal = new Ayllu(colcas = #{agricola, central})
  
   test "Tareas de siembra" {
+
+    assert.equals(180, siembraDePapa.recursosProducidos(4))//4 horas de trabajo produce 180 de recursos
+    assert.equals(420, siembraDePapa.recursosProducidos(10))//10 horas de trabajo produce 420 de recursos
+    
+    siembraDePapa.mes(6)
+
+    assert.equals(0, siembraDePapa.recursosProducidos(4)) //No importan las horas de trabajo, no se produce si es temporada de lluvias
+
+    assert.equals(900, siembraDeMaiz.recursosProducidos(5))//5 horas de trabajo produce 900 de recursos
+    assert.equals(1125, siembraDeMaiz.recursosProducidos(7))//7 horas de trabajo produce 1125 de recursos
   }
+  test "Tareas de mensajes" {
+    
+    assert.equals(210, rutaTamboCentral.recursosProducidos(4))
+    assert.equals(525, rutaTamboCentral.recursosProducidos(10))
 
+    assert.equals(270, caminoDelSapaInca.recursosProducidos(4))
+    assert.equals(810, caminoDelSapaInca.recursosProducidos(10))
+  }
+  test "Cusi trabaja en la siembra de papa" {
+    cusi.realizarTarea(siembraDePapa)
 
+    assert.equals(82, cusi.energia())
+    
+  }
+  test "Cusi trabaja en la ruta tambo central"{
+    cusi.realizarTarea(rutaTamboCentral)
 
+    assert.equals(79, cusi.energia())
+  }
+  test "Cusi no puede trabajar" {
+    cusi.energia(15)
+
+    assert.throwsException({cusi.realizarTarea(siembraDePapa)})
+    assert.throwsException({cusi.realizarTarea(rutaTamboCentral)})
+    assert.equals(15, cusi.energia())
+  }
+  test"Tupac trabaja" {
+    tupac.realizarTarea(siembraDeMaiz)
+
+    assert.equals(111.25, tupac.energia())
+  }
+  test "Tupac trabaja en el camino del Sapa Inca" {
+    tupac.realizarTarea(caminoDelSapaInca)
+
+    assert.equals(137.5, tupac.energia())
+  }
+  test "La mejor colca para Tupac" {
+    assert.equals(2000, agricola.recursosProducidos(tupac))
+    assert.equals(agricola, aylluReal.laMejorColcaPara(tupac))
+  }
+  test "La mejor colca para Cusi" {
+    assert.equals(855, agricola.recursosProducidos(cusi))
+    assert.equals(agricola, aylluReal.laMejorColcaPara(cusi))
+  }
+  test "No hay colca suave para Tupac" {
+    assert.equals(#{}, aylluReal.colcasSuavesPara(tupac))
+  }
+  //Consultar tareas
+  
 }
