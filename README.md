@@ -65,7 +65,7 @@ Mientras que recursos-producidos se resolvió en el punto anterior, el índice s
 
 ## Ayllus (Comunidades)
 
-Un Ayllu está compuesto por varias Colcas (zonas)), y de estas colcas se conocen las tareas que están habilitadas para realizarse en cada una. 
+Un Ayllu está compuesto por varias Colcas (zonas), y de estas colcas se conocen las tareas que están habilitadas para realizarse en cada una. 
 
 ### Requerimientos:
 
